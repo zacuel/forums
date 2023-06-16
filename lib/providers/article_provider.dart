@@ -13,6 +13,7 @@ class Article with ChangeNotifier {
   final String? content;
   final DateTime creationDate;
   final Locale locale;
+  bool isFavorite;
 
   Article({
     required this.id,
@@ -23,7 +24,34 @@ class Article with ChangeNotifier {
     this.content,
     required this.locale,
     required this.creationDate,
+    this.isFavorite = false,
   });
+
+  Future<void> toggleFavoriteStatus(String userId) async {
+    //TODO THE NEXT LINE IS FOR FAILSAFENESS.
+    // final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    notifyListeners();
+    final url = Uri.parse(
+        'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId/markedArticles/$id.json');
+    try {
+      await http.put(url, body: json.encode(isFavorite));
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Icon get articleIcon {
+    if (locale == Locale.local) {
+      return kLocalIcon;
+    } else if (locale == Locale.state) {
+      return kStateIcon;
+    } else if (locale == Locale.national) {
+      return kNationalIcon;
+    } else {
+      return kGlobalIcon;
+    }
+  }
 }
 
 class Articles with ChangeNotifier {
@@ -37,7 +65,6 @@ class Articles with ChangeNotifier {
     //TODO limit to 10 or so recent articles
     List<Article> orderedList = [..._articles];
     orderedList.sort((a, b) => a.creationDate.compareTo(b.creationDate));
-    // List<Article> sortedList = orderedList.reversed as List<Article>;
     return orderedList.reversed.toList();
   }
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 enum WordType { adjective, noun }
 
+//TODO factor name generator out of project.
 class NameEngine {
   List<String> _adjectives = [];
   List<String> _nouns = [];
@@ -50,7 +51,18 @@ class NameEngine {
     }
   }
 
-  static Future<String> get newUserName async {
+  static Future<void> createAlias(String userId) async {
+    final theAlias = await _newUserName;
+    final url = Uri.parse(
+        'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId.json');
+    try {
+      await http.put(url, body: json.encode({'userAlias': theAlias}));
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<String> get _newUserName async {
     final adjectiveUrl = Uri.parse(
         'https://ydtwo-8550b-default-rtdb.firebaseio.com/words/adjectives.json');
     final nounUrl = Uri.parse(

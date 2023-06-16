@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/article_provider.dart';
-import '../widgets/article_tile.dart';
+import '../widgets/article_tile_2.dart';
 import './personal_page.dart';
 import './static_forum_screen.dart';
 
@@ -49,12 +49,17 @@ class _RecentArticlesScreenState extends State<RecentArticlesScreen> {
           child: Column(
         children: [
           ...pageArticles.map((article) {
-            return ArticleTile(
-              locale: article.locale,
-              title: article.title,
-              exciteLine: article.exciteLine,
-              approve: () {},
+            return ChangeNotifierProvider.value(
+              value: article,
+              child: ArticleTile(key: ValueKey(article.id)),
             );
+
+            // ArticleTile(
+            //   locale: article.locale,
+            //   title: article.title,
+            //   exciteLine: article.exciteLine,
+            //   approve: () {},
+            // );
           }),
         ],
       )),

@@ -31,7 +31,6 @@ class _AuthScreenState extends State<AuthScreen> {
     _formKey.currentState!.save();
     try {
       if (_authMode == AuthMode.signUp) {
-        //TODO rename AuthProvider to Auth
         await Provider.of<Auth>(context,
                 listen:
                     false) //This context needs to be what the build context is

@@ -13,7 +13,6 @@ import 'providers/article_provider.dart';
 import 'providers/user_provider.dart';
 import 'screens/success_screen.dart';
 
-//TODO fix git!!!!!
 void main() {
   runApp(const MyApp());
 }
@@ -27,9 +26,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => Auth()),
         ChangeNotifierProvider(create: (ctx) => Articles()),
-        ChangeNotifierProxyProvider<Auth, User>(
-            create: (ctx) => User(''),
-            update: (ctx, auth, previousUserModel) => User(auth.userId)),
+        // ChangeNotifierProxyProvider<Auth, User>(
+        //     create: (ctx) => User(''),
+        //     update: (ctx, auth, previousUserModel) {
+        //       var samantha = User(auth.userId);
+        //       samantha.retrieveAlias();
+        //       return samantha;
+        //     }),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, child) {

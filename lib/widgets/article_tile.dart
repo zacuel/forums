@@ -8,6 +8,7 @@ class ArticleTile extends StatelessWidget {
   final String exciteLine;
   final Locale locale;
   final Function approve;
+
   const ArticleTile(
       {super.key,
       required this.title,
@@ -19,7 +20,7 @@ class ArticleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     //TODO get better locale Icons
 
-    Icon tileIcon = Icon(Icons.ramen_dining);
+    Icon tileIcon;
     if (locale == Locale.local) {
       tileIcon = kLocalIcon;
     } else if (locale == Locale.state) {

@@ -4,32 +4,26 @@ import 'package:http/http.dart' as http;
 import '../providers/article_provider.dart';
 import '../utilities/usernames.dart';
 
-//TODO need list of users for add fuction?
 class User with ChangeNotifier {
   final String _userId;
   String alias = '';
 
   List<Article> favoriteArticles = [];
 //max length: 5
-  User(this._userId);
 
-  static Future<void> createAlias(String userId) async {
-    final theAlias = await NameEngine.newUserName;
+  User(this._userId);
+  String get userId {
+    return _userId;
+  }
+
+  Future<void> retrieveAlias() async {
     final url = Uri.parse(
-        'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId.json');
+        'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$_userId/userAlias.json');
     try {
-      await http.put(url, body: json.encode({'userAlias': theAlias}));
+      final data = await http.get(url);
+      alias = json.decode(data.body);
     } catch (error) {
       rethrow;
     }
   }
-
-  // static Future<void> createAlias(String userId) async {
-  //   final url = Uri.parse(
-  //       'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId.json');
-  //   final alias = await NameEngine.NewUsername;
-
-  //   //TODO use 'put' for name words
-  //   await http.put(url, body: json.encode({'userAlias': alias}));
-  // }
 }

@@ -46,7 +46,7 @@ class Auth with ChangeNotifier {
       _token = responseData['idToken'];
       _userId = responseData['localId'];
       if (urlSegment == 'signUp') {
-        User.createAlias(_userId!);
+        NameEngine.createAlias(_userId!);
       }
       _expiryDate = DateTime.now()
           .add(Duration(seconds: int.parse(responseData['expiresIn'])));
