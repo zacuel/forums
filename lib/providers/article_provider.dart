@@ -55,10 +55,17 @@ class Article with ChangeNotifier {
 }
 
 class Articles with ChangeNotifier {
+  final String _userId;
   List<Article> _articles = [];
+
+  Articles(this._userId);
 
   List<Article> get articles {
     return [..._articles];
+  }
+
+  Article retrievetSingleArticle(articleId) {
+    return _articles.firstWhere((article) => article.id == articleId);
   }
 
   List<Article> get recentArticles {
@@ -96,6 +103,10 @@ class Articles with ChangeNotifier {
     return [_localArticles, _stateArticles, _nationalArticles, _globalArticles];
   }
 
+  List<Article> get favoriteArticles {
+    return _articles.where((article) => article.isFavorite).toList();
+  }
+
   Future<void> fetchAndSetArticles() async {
     final url = Uri.parse(
         'https://ydtwo-8550b-default-rtdb.firebaseio.com/articles.json');
@@ -106,6 +117,11 @@ class Articles with ChangeNotifier {
         return;
       }
       final extractedData = data as Map<String, dynamic>;
+//GET FAVORITES DATA
+      final favoritesUrl = Uri.parse(
+          'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$_userId/markedArticles.json');
+      final favoritesResponse = await http.get(favoritesUrl);
+      final favoritesData = json.decode(favoritesResponse.body);
       final List<Article> loadedArticles = [];
       extractedData.forEach((articleId, articleData) {
         loadedArticles.add(Article(
@@ -117,6 +133,8 @@ class Articles with ChangeNotifier {
           content: articleData['content'] ?? null,
           exciteLine: articleData['exciteLine'],
           locale: Locale.values[articleData['localeIndex']],
+          isFavorite:
+              favoritesData == null ? false : favoritesData[articleId] ?? false,
         ));
       });
       _articles = loadedArticles;

@@ -11,6 +11,8 @@ class Auth with ChangeNotifier {
   String? _userId;
   DateTime? _expiryDate;
   Timer? _authTimer;
+  //TODO make alias private maybe
+  String? sillyName;
   bool get isAuth {
     return _token != null;
   }
@@ -46,13 +48,27 @@ class Auth with ChangeNotifier {
       _token = responseData['idToken'];
       _userId = responseData['localId'];
       if (urlSegment == 'signUp') {
-        NameEngine.createAlias(_userId!);
+        sillyName = NameEngine.createAlias(_userId!) as String?;
+      } else {
+        sillyName = await _retrieveSillyName(_userId!);
       }
       _expiryDate = DateTime.now()
           .add(Duration(seconds: int.parse(responseData['expiresIn'])));
       _autoLogout();
       notifyListeners();
       //TODO shared preferences for auto logins
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<String> _retrieveSillyName(String userId) async {
+    final url = Uri.parse(
+        'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId/userAlias.json');
+    try {
+      final response = await http.get(url);
+      final theSillyness = json.decode(response.body);
+      return Future(() => theSillyness);
     } catch (error) {
       rethrow;
     }

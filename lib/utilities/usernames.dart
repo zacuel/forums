@@ -51,7 +51,7 @@ class NameEngine {
     }
   }
 
-  static Future<void> createAlias(String userId) async {
+  static Future<String> createAlias(String userId) async {
     final theAlias = await _newUserName;
     final url = Uri.parse(
         'https://ydtwo-8550b-default-rtdb.firebaseio.com/users/$userId.json');
@@ -60,6 +60,7 @@ class NameEngine {
     } catch (error) {
       rethrow;
     }
+    return Future(() => 'theAlias');
   }
 
   static Future<String> get _newUserName async {
